@@ -1339,6 +1339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1824470648}
+  cameraOverlay: {fileID: 2032760324}
   DebugText: {fileID: 2014867643}
 --- !u!1 &2014867641
 GameObject:
@@ -1425,6 +1426,7 @@ GameObject:
   - component: {fileID: 2032760321}
   - component: {fileID: 2032760323}
   - component: {fileID: 2032760322}
+  - component: {fileID: 2032760324}
   m_Layer: 5
   m_Name: CameraOverlay
   m_TagString: CameraPanel
@@ -1486,3 +1488,21 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2032760320}
   m_CullTransparentMesh: 0
+--- !u!95 &2032760324
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2032760320}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8660d48bd8f70b4479732a7de9794ad9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

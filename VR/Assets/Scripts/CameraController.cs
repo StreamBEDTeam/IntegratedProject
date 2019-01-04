@@ -6,6 +6,8 @@ public class CameraController : MonoBehaviour
 
     public Camera mainCamera;
 
+    public Animator cameraOverlay;
+
     private GameObject raycastFocus;
 
     public Text DebugText;
@@ -29,6 +31,10 @@ public class CameraController : MonoBehaviour
     {
         RaycastHit hit;
         if (Physics.Raycast (mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out hit)) {
+            if(raycastFocus != hit.collider.gameObject)
+            {
+                raycastFocus.SendMessage("onRaycastRemoved");
+            }
             raycastFocus = hit.collider.gameObject;
             raycastFocus.SendMessage("onRaycastReceived");
         }           
@@ -44,10 +50,10 @@ public class CameraController : MonoBehaviour
 
     private void checkControllerInput()
     {
-        bool isAPressed = Input.GetButton("A");
-        bool isBPressed = Input.GetButton("B");
-        bool isXPressed = Input.GetButton("X");
-        bool isYPressed = Input.GetButton("Y");
+        bool isAPressed = Input.GetButtonDown("A");
+        bool isBPressed = Input.GetButtonDown("B");
+        bool isXPressed = Input.GetButtonDown("X");
+        bool isYPressed = Input.GetButtonDown("Y");
 
         DebugText.text = string.Format("A: {0} B: {1} X: {2} Y: {3}\n", isAPressed, isBPressed, isXPressed, isYPressed);
 
@@ -74,12 +80,14 @@ public class CameraController : MonoBehaviour
 
     private void onAPressed()
     {
-        tourController.setCameraMode(true);
+        //tourController.setCameraMode(true);
+        cameraOverlay.SetTrigger("ButtonA");
     }
 
     private void onBPressed()
     {
-        tourController.setCameraMode(false);
+        //tourController.setCameraMode(false);
+        cameraOverlay.SetTrigger("ButtonB");
     }
 
     private void onXPressed()

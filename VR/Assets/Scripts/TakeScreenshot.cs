@@ -50,7 +50,7 @@ public class TakeScreenshot : MonoBehaviour
 
         public string[] getFeatures()
         {
-            return (string[])features.ToArray();
+            return features.ToArray();
         }
     }
 
