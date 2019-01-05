@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
 
     private GameObject raycastFocus;
 
-    public Text DebugText;
+    //public Text DebugText;
 
     private TourController tourController;
 
@@ -55,7 +55,7 @@ public class CameraController : MonoBehaviour
         bool isXPressed = Input.GetButtonDown("X");
         bool isYPressed = Input.GetButtonDown("Y");
 
-        DebugText.text = string.Format("A: {0} B: {1} X: {2} Y: {3}\n", isAPressed, isBPressed, isXPressed, isYPressed);
+        //DebugText.text = string.Format("A: {0} B: {1} X: {2} Y: {3}\n", isAPressed, isBPressed, isXPressed, isYPressed);
 
         if (isAPressed)
         {
