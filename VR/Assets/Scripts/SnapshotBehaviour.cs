@@ -1,21 +1,15 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Animation))]
 public class SnapshotBehaviour : MonoBehaviour
 {
-    //public RenderTexture snapshotTexture;
     public Camera PhotoCamera;
+    public string TriggerState;
 
-    private Animation anim;
-    // Use this for initialization
-    void Start()
+    public void OnStateEnter(string stateName)
     {
-        anim = GetComponent<Animation>();
-    }
-
-    // Take the snapshot
-    public void OnSnapping()
-    {
-        PhotoCamera.Render();
+        if (stateName == TriggerState)
+        {
+            PhotoCamera.Render();
+        }
     }
 }

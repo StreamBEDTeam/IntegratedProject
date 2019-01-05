@@ -76,6 +76,11 @@ public class CameraController : MonoBehaviour
         {
             onYPressed();
         }
+
+        if (Input.GetButtonDown("Quit"))
+        {
+            Application.Quit();
+        }
     }
 
     private void onAPressed()
