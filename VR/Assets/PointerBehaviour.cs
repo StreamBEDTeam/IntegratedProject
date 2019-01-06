@@ -31,7 +31,7 @@ public class PointerBehaviour : MonoBehaviour
     }
     public void OnStateEnter(string stateName)
     {
-        if (stateName == "Discarding")
+        if (stateName == "Discarding" || stateName == "Saving")
         {
             PointerReset();
         }
