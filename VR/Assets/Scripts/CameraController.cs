@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
     {
         RaycastHit hit;
         if (Physics.Raycast (mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out hit)) {
-            if(raycastFocus != hit.collider.gameObject)
+            if(raycastFocus != null && raycastFocus != hit.collider.gameObject)
             {
                 raycastFocus.SendMessage("onRaycastRemoved");
             }

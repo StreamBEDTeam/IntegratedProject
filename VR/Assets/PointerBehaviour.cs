@@ -3,8 +3,8 @@
 [RequireComponent(typeof(RectTransform))]
 public class PointerBehaviour : MonoBehaviour
 {
-    public FeatureButtonBehaviour[] Buttons;
-    public int SelectedIndex;
+    public IButtonBehaviour[] Buttons;
+    public int SelectedIndex = 0;
     public float smoothTime = 0.3F;
     private RectTransform rectTransform;
 
@@ -14,8 +14,27 @@ public class PointerBehaviour : MonoBehaviour
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
+        SelectedIndex = 0;
         UpdateDestination();
         rectTransform.position = destination;
+    }
+
+    void PointerReset()
+    {
+        SelectedIndex = 0;
+        UpdateDestination();
+        rectTransform.position = destination;
+        foreach (var button in Buttons)
+        {
+            button.ButtonReset();
+        }
+    }
+    public void OnStateEnter(string stateName)
+    {
+        if (stateName == "Discarding")
+        {
+            PointerReset();
+        }
     }
 
     void UpdateDestination()
@@ -37,7 +56,7 @@ public class PointerBehaviour : MonoBehaviour
         UpdateDestination();
         if (Input.GetButtonDown("C"))
         {
-                Buttons[SelectedIndex].Animator.SetTrigger("Select");
+            Buttons[SelectedIndex].ButtonClick();
         }
         //rectTransform.position = Vector3.Lerp(rectTransform.position, destination, Speed * Time.deltaTime);
         rectTransform.position = Vector3.SmoothDamp(rectTransform.position, destination, ref velocity, smoothTime);

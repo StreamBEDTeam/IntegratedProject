@@ -4,7 +4,8 @@
 Preset:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: TakeScreenshot
   m_TargetType:
     m_NativeTypeID: 114
@@ -19,10 +20,6 @@ Preset:
   - target: {fileID: 0}
     propertyPath: m_EditorHideFlags
     value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_Name
-    value: 
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_EditorClassIdentifier
@@ -64,7 +61,7 @@ Preset:
     propertyPath: confirmButtonPrefab
     value: 
     objectReference: {fileID: 1610371564582670, guid: 0d6071437a3e35a47a4e770ca95add3e,
-      type: 2}
+      type: 3}
   - target: {fileID: 0}
     propertyPath: deleteButtonPrefab
     value: 
@@ -74,7 +71,7 @@ Preset:
     propertyPath: featureTogglePrefab
     value: 
     objectReference: {fileID: 1619110163614866, guid: e0fe825aae8256445a171d800e646f7d,
-      type: 2}
+      type: 3}
   - target: {fileID: 0}
     propertyPath: camera
     value: 
