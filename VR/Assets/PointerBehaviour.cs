@@ -3,20 +3,62 @@
 [RequireComponent(typeof(RectTransform))]
 public class PointerBehaviour : MonoBehaviour
 {
-    public IButtonBehaviour[] Buttons;
+    public class Axis2DToPress
+    {
+        private float cutoff;
+        private int state;
+        private OVRInput.Axis2D axis;
+        public Axis2DToPress(OVRInput.Axis2D axis, float cutoff)
+        {
+            this.axis = axis;
+            this.cutoff = cutoff;
+            state = 0;
+        }
+        public int Get()
+        {
+            var current = OVRInput.Get(axis).y;//, OVRInput.Controller.RTouch);
+            if (current > cutoff)
+            {
+                if (state == 0)
+                {
+                    state = 1;
+                    return 1;
+                }
+            }
+            else
+            {
+                if (current < -cutoff)
+                {
+                    if (state == 0)
+                    {
+                        state = -1;
+                        return -1;
+                    }
+                }
+                else
+                {
+                    state = 0;
+                }
+            }
+            return 0;
+        }
+
+    }
+        public IButtonBehaviour[] Buttons;
     public int SelectedIndex = 0;
     public float smoothTime = 0.3F;
     private RectTransform rectTransform;
 
     private Vector3 destination;
     private Vector3 velocity = Vector3.zero;
-
+    Axis2DToPress axis;
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
         SelectedIndex = 0;
         UpdateDestination();
         rectTransform.position = destination;
+        axis = new Axis2DToPress(OVRInput.Axis2D.SecondaryThumbstick, 0.5f);
     }
 
     void PointerReset()
@@ -45,6 +87,7 @@ public class PointerBehaviour : MonoBehaviour
 
     void Update()
     {
+        SelectedIndex -= axis.Get();
         if (Input.GetButtonDown("X"))
         {
             SelectedIndex++;
@@ -54,7 +97,8 @@ public class PointerBehaviour : MonoBehaviour
             SelectedIndex--;
         }
         UpdateDestination();
-        if (Input.GetButtonDown("C"))
+        if (Input.GetButtonDown("A") || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger,
+            OVRInput.Controller.RTouch))
         {
             Buttons[SelectedIndex].ButtonClick();
         }

@@ -34,12 +34,14 @@ public class SaveButtonBehaviour : IButtonBehaviour
         var txtPath = Path.Combine(SavePath, String.Format("{0}.txt", dts));
         var width = SourceTexture.width;
         var height = SourceTexture.height;
+
         var tex = new Texture2D(width, height);
-        RenderTexture active = RenderTexture.active;
+        RenderTexture previouslyActive = RenderTexture.active;
         RenderTexture.active = SourceTexture;
-        tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-        RenderTexture.active = active;
+        tex.ReadPixels(new Rect(0, 0, width, height), 0, 0); 
+        // ReadPixels always reads from RenderTexture.active
         var png = tex.EncodeToPNG();
+        RenderTexture.active = previouslyActive;
         UnityEngine.Object.Destroy(tex);
         File.WriteAllBytes(imgPath, png);
         File.WriteAllText(txtPath, sb.ToString());

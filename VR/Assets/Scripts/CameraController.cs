@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class CameraController : MonoBehaviour
 {
 
-    public Camera mainCamera;
+    public Transform rayCastSource;
 
     public Animator cameraOverlay;
 
@@ -13,24 +13,30 @@ public class CameraController : MonoBehaviour
     //public Text DebugText;
 
     private TourController tourController;
-
     // Use this for initialization
     void Start()
     {
+        Debug.Log("Start");
         tourController = GameObject.Find("TourManager").GetComponent<TourController>();
     }
 
     // called every frame
     void Update()
     {
+        //OVRInput.Update();
         castRay();
         checkControllerInput();
+    }
+
+    private void FixedUpdate()
+    {
+        //OVRInput.FixedUpdate();
     }
 
     private void castRay()
     {
         RaycastHit hit;
-        if (Physics.Raycast (mainCamera.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out hit)) {
+        if (Physics.Raycast (rayCastSource.transform.position, rayCastSource.transform.TransformDirection(Vector3.forward), out hit)) {
             if(raycastFocus != null && raycastFocus != hit.collider.gameObject)
             {
                 raycastFocus.SendMessage("onRaycastRemoved");
@@ -48,10 +54,52 @@ public class CameraController : MonoBehaviour
         }
     }
 
+
     private void checkControllerInput()
     {
-        bool isAPressed = Input.GetButtonDown("A");
-        bool isBPressed = Input.GetButtonDown("B");
+        /*
+        if (OVRInput.GetDown(OVRInput.Button.One))
+        {
+            Debug.Log("Testing");
+        }
+
+        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger,
+            OVRInput.Controller.RTouch))
+        {
+            Debug.Log("T1");
+        }
+
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger,
+            OVRInput.Controller.RTouch))
+        {
+            Debug.Log("T2");
+        }
+
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger,
+            OVRInput.Controller.LTouch))
+        {
+            Debug.Log("T3");
+        }
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger,
+            OVRInput.Controller.Active))
+        {
+            Debug.Log("T4");
+        }
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger,
+            OVRInput.Controller.All))
+        {
+            Debug.Log("T5");
+        }
+        */
+
+        bool isAPressed = Input.GetButtonDown("A") ||
+            (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger,
+            OVRInput.Controller.RTouch));
+            //indexTrigger.Get();
+        bool isBPressed = Input.GetButtonDown("B") ||
+            (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger,
+            OVRInput.Controller.RTouch));
+        //handTrigger.Get();
         bool isXPressed = Input.GetButtonDown("X");
         bool isYPressed = Input.GetButtonDown("Y");
 
