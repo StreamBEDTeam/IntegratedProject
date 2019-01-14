@@ -8,15 +8,17 @@ public class PointerBehaviour : MonoBehaviour
         private float cutoff;
         private int state;
         private OVRInput.Axis2D axis;
-        public Axis2DToPress(OVRInput.Axis2D axis, float cutoff)
+        private OVRInput.Controller controller;
+        public Axis2DToPress(OVRInput.Axis2D axis, OVRInput.Controller controller, float cutoff)
         {
             this.axis = axis;
+            this.controller = controller;
             this.cutoff = cutoff;
             state = 0;
         }
         public int Get()
         {
-            var current = OVRInput.Get(axis).y;//, OVRInput.Controller.RTouch);
+            var current = OVRInput.Get(axis, controller).y;//, OVRInput.Controller.RTouch);
             if (current > cutoff)
             {
                 if (state == 0)
@@ -58,7 +60,7 @@ public class PointerBehaviour : MonoBehaviour
         SelectedIndex = 0;
         UpdateDestination();
         rectTransform.position = destination;
-        axis = new Axis2DToPress(OVRInput.Axis2D.SecondaryThumbstick, 0.5f);
+        axis = new Axis2DToPress(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch, 0.6f);
     }
 
     void PointerReset()
