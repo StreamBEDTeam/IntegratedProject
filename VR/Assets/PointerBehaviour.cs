@@ -3,57 +3,15 @@
 [RequireComponent(typeof(RectTransform))]
 public class PointerBehaviour : MonoBehaviour
 {
-    public class Axis2DToPress
-    {
-        private float cutoff;
-        private int state;
-        private OVRInput.Axis2D axis;
-        private OVRInput.Controller controller;
-        public Axis2DToPress(OVRInput.Axis2D axis, OVRInput.Controller controller, float cutoff)
-        {
-            this.axis = axis;
-            this.controller = controller;
-            this.cutoff = cutoff;
-            state = 0;
-        }
-        public int Get()
-        {
-            var current = OVRInput.Get(axis, controller).y;//, OVRInput.Controller.RTouch);
-            if (current > cutoff)
-            {
-                if (state == 0)
-                {
-                    state = 1;
-                    return 1;
-                }
-            }
-            else
-            {
-                if (current < -cutoff)
-                {
-                    if (state == 0)
-                    {
-                        state = -1;
-                        return -1;
-                    }
-                }
-                else
-                {
-                    state = 0;
-                }
-            }
-            return 0;
-        }
-
-    }
-        public IButtonBehaviour[] Buttons;
+    public MenuButtons Buttons;
     public int SelectedIndex = 0;
-    public float smoothTime = 0.3F;
-    private RectTransform rectTransform;
+    public float smoothTime = 0.1F;
 
+    private RectTransform rectTransform;
     private Vector3 destination;
     private Vector3 velocity = Vector3.zero;
-    Axis2DToPress axis;
+    private Axis2DToPress axis;
+
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -68,11 +26,12 @@ public class PointerBehaviour : MonoBehaviour
         SelectedIndex = 0;
         UpdateDestination();
         rectTransform.position = destination;
-        foreach (var button in Buttons)
+        foreach (var button in Buttons.buttonBehaviours)
         {
             button.ButtonReset();
         }
     }
+
     public void OnStateEnter(string stateName)
     {
         if (stateName == "Discarding" || stateName == "Saving")
@@ -83,8 +42,8 @@ public class PointerBehaviour : MonoBehaviour
 
     void UpdateDestination()
     {
-        SelectedIndex = (SelectedIndex + Buttons.Length) % (Buttons.Length);
-        destination = Buttons[SelectedIndex].Target.position;
+        SelectedIndex = (SelectedIndex + Buttons.buttonBehaviours.Length) % (Buttons.buttonBehaviours.Length);
+        destination = Buttons.buttonBehaviours[SelectedIndex].Target.position;
     }
 
     void Update()
@@ -99,10 +58,12 @@ public class PointerBehaviour : MonoBehaviour
             SelectedIndex--;
         }
         UpdateDestination();
-        if (Input.GetButtonDown("A") || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger,
-            OVRInput.Controller.RTouch))
+        if (Input.GetButtonDown("A") ||
+            OVRInput.GetDown(
+                OVRInput.Button.PrimaryIndexTrigger,
+                OVRInput.Controller.RTouch))
         {
-            Buttons[SelectedIndex].ButtonClick();
+            Buttons.buttonBehaviours[SelectedIndex].ButtonClick();
         }
         //rectTransform.position = Vector3.Lerp(rectTransform.position, destination, Speed * Time.deltaTime);
         rectTransform.position = Vector3.SmoothDamp(rectTransform.position, destination, ref velocity, smoothTime);
