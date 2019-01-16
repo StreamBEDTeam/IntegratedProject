@@ -10,7 +10,6 @@ public class SnapshotBehaviour : MonoBehaviour
     public string SavePath;
     public Camera snapshotCamera;
     public PhotoCameraArea areaCamera;
-    //public CameraZoom zoomer;
     public float cutoff;
     public Animator animator;
     public int SelectedArea = -1;
@@ -178,10 +177,10 @@ public class SnapshotBehaviour : MonoBehaviour
     private void SelectArea()
     {
         SelectedArea = -1;
-        float bestSelected = 0;
+        float bestSelected = MinSelected;
         for (int i = 0; i < Masks.Length; i++)
         {
-            if (Masks[i].SnapCount.Covered >= MinSelected)
+            if (Masks[i].SnapCount.Covered >= bestSelected)
             {
                 bestSelected = Masks[i].SnapCount.Covered;
                 SelectedArea = i;

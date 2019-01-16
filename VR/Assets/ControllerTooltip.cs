@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Transform))]
 public class ControllerTooltip : MonoBehaviour
@@ -11,7 +12,14 @@ public class ControllerTooltip : MonoBehaviour
     private GameObject controller = null;
     private Transform controllerTransform = null;
     private Transform src = null;
+    private TextMesh textMesh;
     // Start is called before the first frame update
+
+        public string Text
+    {
+        get { return textMesh.text; }
+        set { textMesh.text = value; }
+    }
 
     private void getTarget()
     {
@@ -42,6 +50,7 @@ public class ControllerTooltip : MonoBehaviour
     void Start()
     {
         src = GetComponent<Transform>();
+        textMesh = GetComponentInChildren<TextMesh>();
 
         //var controller = avatar.ControllerRight.gameObject;
         //controller.

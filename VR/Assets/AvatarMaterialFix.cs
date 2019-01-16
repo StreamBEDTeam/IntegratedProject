@@ -18,6 +18,7 @@ public class AvatarMaterialFix : MonoBehaviour
     {
         if (!isFixed)
         {
+            /*
             if (mesh == null){
                 mesh = avatar.HandRight.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
             }
@@ -25,6 +26,21 @@ public class AvatarMaterialFix : MonoBehaviour
             {
                 mesh.material.shader = shader;
                 isFixed = true;
+            }
+            */
+            FixObject(avatar.HandRight.gameObject);
+            FixObject(avatar.ControllerRight.gameObject);
+            isFixed = true;
+        }
+    }
+
+    void FixObject(GameObject obj)
+    {
+        foreach(var o in obj.GetComponentsInChildren<SkinnedMeshRenderer>())
+        {
+            foreach(var mat in o.materials)
+            {
+                mat.shader = shader;
             }
         }
     }
