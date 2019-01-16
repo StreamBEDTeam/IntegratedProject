@@ -1,16 +1,5 @@
-﻿using UnityEngine;
-
-[RequireComponent(typeof(AudioSource))]
-public class SaveButtonBehaviour : IButtonBehaviour
+﻿
+public class SaveButtonBehaviour : ClickButtonBehaviour
 {
-    public SnapshotBehaviour snapshot;
 
-    public override void ButtonClick()
-    {
-        snapshot.SnapSave();
-    }
-
-    public override void ButtonReset()
-    {
-    }
 }

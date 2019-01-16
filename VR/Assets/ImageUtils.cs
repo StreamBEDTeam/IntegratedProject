@@ -11,6 +11,13 @@ public class ImageUtils
     {
         public int Total = 0;
         public int Selected = 0;
+        public float Covered
+        {
+            get
+            {
+                return ((float)Selected) / ((float)Total);
+            }
+        }
     }
 
     public PixelCount CountPixels(Texture2D tex, float cutoff)
