@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class SnapshotBehaviour : MonoBehaviour
 {
-    public MenuButtons Buttons;
     public string SavePath;
     public Camera snapshotCamera;
     public PhotoCameraArea areaCamera;
@@ -15,6 +14,7 @@ public class SnapshotBehaviour : MonoBehaviour
     public int SelectedArea = -1;
     public float MinSelected = 0.1f;
     public Mask[] Masks;
+    GameStateHandle gameStateHandle;
 
     public FeatureMenu[] Menus { get; private set; }
 
@@ -26,6 +26,9 @@ public class SnapshotBehaviour : MonoBehaviour
         public Texture2D MaskTexture;
         public string AreaName;
         public int AreaType;
+
+        public bool requiredArea;
+        public string[] correctTags;
 
         [System.NonSerialized]
         public ImageUtils.PixelCount MaskCount;
@@ -49,6 +52,7 @@ public class SnapshotBehaviour : MonoBehaviour
 
     private void Start()
     {
+        gameStateHandle = GameObject.FindObjectOfType<GameStateHandle>();
         axisY = new Axis2DToPress(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch, 0.6f);
         hashOpened = Animator.StringToHash("Opened");
         hashClosed = Animator.StringToHash("Closed");
@@ -70,6 +74,7 @@ public class SnapshotBehaviour : MonoBehaviour
             menu.buttons.saveButtonEvent.AddListener(SnapSave);
             menu.buttons.discardButtonEvent.RemoveAllListeners();
             menu.buttons.discardButtonEvent.AddListener(SnapDiscard);
+            menu.MenuEnabled(false);
         }
     }
     private void Update()
@@ -161,12 +166,12 @@ public class SnapshotBehaviour : MonoBehaviour
         SelectArea();
         if(SelectedArea >= 0)
         {
-            animator.SetTrigger("Snap");
             var area = Masks[SelectedArea];
             var menu = Menus[area.AreaType];
             menu.MenuEnabled(true);
             menu.pointer.SelectedIndex = 0;
             menu.pointer.checkIndex();
+            animator.SetTrigger("Snap");
         }
         else
         {
@@ -188,8 +193,34 @@ public class SnapshotBehaviour : MonoBehaviour
         }
     }
 
+    public bool checkFeatures()
+    {
+        var area = Masks[SelectedArea];
+        var menu = Menus[area.AreaType];
+        if (area.requiredArea)
+        {
+            foreach(var button in menu.buttons.featureButtons)
+            {
+                if (button.IsSelected && Array.IndexOf(area.correctTags, button.FeatureName) == -1)
+                {
+                    return false;
+                }
+                if (!button.IsSelected && Array.IndexOf(area.correctTags, button.FeatureName) > -1)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public void SnapSave()
     {
+        if (!checkFeatures())
+        {
+            animator.SetTrigger("Incorrect");
+            return;
+        }
         //Todo: Write rotation of user and camera
         Directory.CreateDirectory(SavePath);
         var sb = new StringBuilder();
@@ -198,7 +229,9 @@ public class SnapshotBehaviour : MonoBehaviour
         sb.AppendLine(String.Format("Save Time: {0}", dts));
         sb.AppendLine(String.Format("FoV: {0}", fieldOfView));
         sb.AppendLine(String.Format("Selected Area: {0}", Masks[SelectedArea].AreaName));
-        foreach (var button in Buttons.featureButtons)
+        var area = Masks[SelectedArea];
+        var menu = Menus[area.AreaType];
+        foreach (var button in menu.buttons.featureButtons)
         {
             sb.AppendLine(String.Format(
                             "Feature {0}: {1}",
@@ -232,19 +265,20 @@ public class SnapshotBehaviour : MonoBehaviour
         imageUtils.Texture2DToPng(Masks[SelectedArea].SaveTexture, aPath);
 
         File.WriteAllText(txtPath, sb.ToString());
-        animator.SetTrigger("Save");
-        foreach(var menu in Menus)
+        foreach(var m in Menus)
         {
-            menu.MenuEnabled(false);
+            m.MenuEnabled(false);
         }
+        gameStateHandle.GameState.SetIsCaptured(Masks[SelectedArea].AreaName, true);
+        animator.SetTrigger("Save");
     }
 
     public void SnapDiscard()
     {
-        animator.SetTrigger("Discard");
         foreach (var menu in Menus)
         {
             menu.MenuEnabled(false);
         }
+        animator.SetTrigger("Discard");
     }
 }

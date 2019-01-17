@@ -6,11 +6,12 @@ public class FeatureButtonBehaviour : IButtonBehaviour
 {
     private Animator animator;
     private static readonly string Selected = "Selected";
+    public string FeatureName;
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        FeatureName = GetComponentInChildren<Text>().text;
+        //FeatureName = GetComponentInChildren<Text>().text;
     }
     public override void ButtonClick()
     {
@@ -18,7 +19,6 @@ public class FeatureButtonBehaviour : IButtonBehaviour
             animator.SetBool(Selected, !IsSelected);
         }
     }
-    public string FeatureName { get; private set; }
     public bool IsSelected
     {
         get { return animator.GetBool(Selected); }
