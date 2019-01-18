@@ -21,7 +21,7 @@ public class FingerPointer : MonoBehaviour
     public float pointerLen = 0.5f;
     private int activeStateHash;
 
-    private NavHotspot selectedHotspot=null;
+    private Hotspot selectedHotspot=null;
 
 void Start()
     {
@@ -32,6 +32,7 @@ void Start()
         avatar = GameObject.FindObjectOfType<OvrAvatar>();
         snapshot = GameObject.FindObjectOfType<SnapshotBehaviour>();
         activeStateHash = Animator.StringToHash(ActiveState);
+        Debug.LogFormat("Raycast mask: {0}", RaycastMask.mask);
     }
 
     // Update is called once per frame
@@ -55,10 +56,10 @@ void Start()
             {
                 //Debug.LogFormat("Raycasted {0}", hit.collider.gameObject.name);
                 pos2 = hit.point;
-                line.startColor = Color.red;
-                line.endColor = Color.red;
+                line.startColor = Color.grey;
+                line.endColor = Color.grey;
 
-                var hotspot = hit.collider.gameObject.GetComponent<NavHotspot>();
+                var hotspot = hit.collider.gameObject.GetComponent<Hotspot>();
                 if(selectedHotspot != null && selectedHotspot != hotspot)
                 {
                     selectedHotspot.RaycastHit(false);
@@ -67,7 +68,12 @@ void Start()
 
                 if (hotspot != null) {
                     selectedHotspot = hotspot;
-                    selectedHotspot.RaycastHit(true);
+                    if (selectedHotspot.HotspotEnabled)
+                    {
+                        line.startColor = Color.red;
+                        line.endColor = Color.red;
+                        selectedHotspot.RaycastHit(true);
+                    }
                 }
             }
             else

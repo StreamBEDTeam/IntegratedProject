@@ -37,6 +37,21 @@ public class GameStateContent : MonoBehaviour
             }
             return makeAreaState(areaName);
         }
+        public int CapturedAreaCount
+        {
+            get
+            {
+                int count = 0;
+                foreach(var area in areas)
+                {
+                    if (area.isCaptured)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
     }
 
     [Serializable]
@@ -56,6 +71,10 @@ public class GameStateContent : MonoBehaviour
         var scene = new SceneState(sceneName);
         scenes.Add(scene);
         return scene;
+    }
+    public SceneState getSceneState()
+    {
+        return getSceneState(SceneName);
     }
     public SceneState getSceneState(string sceneName)
     {

@@ -1,10 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 public class ImageUtils
 {
     public class PixelCount
@@ -15,7 +10,7 @@ public class ImageUtils
         {
             get
             {
-                return ((float)Selected) / ((float)Total);
+                return Selected / ((float)Total);
             }
         }
     }

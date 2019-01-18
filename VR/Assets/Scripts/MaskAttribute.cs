@@ -1,12 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using System;
 using UnityEditor;
-using System;
 using UnityEditorInternal;
+using UnityEngine;
 
 [Serializable]
 public class MaskAttribute : PropertyAttribute
@@ -19,11 +14,31 @@ public class MaskAttribute : PropertyAttribute
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             SerializedProperty mask = property.FindPropertyRelative("mask");
-            mask.intValue = EditorGUI.MaskField(
+            //EditorGUI.LayerField()
+            //EditorGUI.mas
+            var layerNames = InternalEditorUtility.layers;
+            int tmpMask = 0;
+            for (int i = 0; i < layerNames.Length; i++)
+            {
+                if (((1 << LayerMask.NameToLayer(layerNames[i])) & mask.intValue) > 0)
+                {
+                    tmpMask |= 1 << i;
+                }
+            }
+            tmpMask = EditorGUI.MaskField(
                 position,
                 label,
-                mask.intValue,
-                InternalEditorUtility.layers);
+                tmpMask,
+                layerNames
+                );
+            mask.intValue = 0;
+            for (int i = 0; i < layerNames.Length; i++)
+            {
+                if (((1 << i) & tmpMask) > 0)
+                {
+                    mask.intValue |= 1 << LayerMask.NameToLayer(layerNames[i]);
+                }
+            }
         }
     }
 }

@@ -466,8 +466,8 @@ MonoBehaviour:
       Text: Open Camera
       Enabled: 1
     handConfig:
-      Text: 
-      Enabled: 0
+      Text: Open Map
+      Enabled: 1
     thumbConfig:
       Text: 
       Enabled: 0
@@ -491,3 +491,13 @@ MonoBehaviour:
     thumbConfig:
       Text: Navigate
       Enabled: 1
+  - stateName: Map
+    indexConfig:
+      Text: 
+      Enabled: 0
+    handConfig:
+      Text: Close Map
+      Enabled: 1
+    thumbConfig:
+      Text: 
+      Enabled: 0
