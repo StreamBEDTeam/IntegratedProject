@@ -36,10 +36,10 @@ public class ControllerTooltip : MonoBehaviour
         {
             foreach (var t in controller.GetComponentsInChildren<Transform>())
             {
-                Debug.Log(t.gameObject.name);
+                //Debug.Log(t.gameObject.name);
                 if (t.gameObject.name == TargetName)
                 {
-                    Debug.LogFormat("match {0}", t.gameObject.name);
+                    //Debug.LogFormat("match {0}", t.gameObject.name);
                     buttonTransform = t;
                     break;
                 }
