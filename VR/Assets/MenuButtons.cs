@@ -9,6 +9,8 @@ public class MenuButtons : MonoBehaviour
     [NonSerialized]
     public FeatureButtonBehaviour[] featureButtons;
     [NonSerialized]
+    public FeatureHeader[] featureHeaders;
+    [NonSerialized]
     public SaveButtonBehaviour[] saveButtons;
     [NonSerialized]
     public DiscardButtonBehaviour[] discardButtons;
@@ -20,6 +22,7 @@ public class MenuButtons : MonoBehaviour
     {
         buttonBehaviours = GetComponentsInChildren<IButtonBehaviour>(true);
         featureButtons = GetComponentsInChildren<FeatureButtonBehaviour>(true);
+        featureHeaders = GetComponentsInChildren<FeatureHeader>(true);
         saveButtons = GetComponentsInChildren<SaveButtonBehaviour>(true);
         discardButtons = GetComponentsInChildren<DiscardButtonBehaviour>(true);
         /*
@@ -49,6 +52,10 @@ public class MenuButtons : MonoBehaviour
         foreach (var button in buttonBehaviours)
         {
             button.ButtonEnabled(enable);
+        }
+        foreach(var header in featureHeaders)
+        {
+            header.gameObject.SetActive(enable);
         }
     }
 }

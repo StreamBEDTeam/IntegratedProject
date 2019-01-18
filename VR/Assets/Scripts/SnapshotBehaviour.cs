@@ -11,12 +11,44 @@ public class SnapshotBehaviour : MonoBehaviour
     public PhotoCameraArea areaCamera;
     public float cutoff;
     public Animator animator;
-    public int SelectedArea = -1;
+    public int SelectedAreaId = -1;
     public float MinSelected = 0.1f;
+    public int saveAttemptCount = 0;
     public Mask[] Masks;
+    public MessageBehaviour Message;
     GameStateHandle gameStateHandle;
 
+
     public FeatureMenu[] Menus { get; private set; }
+
+    public Mask SelectedArea
+    {
+        get
+        {
+            if (SelectedAreaId == -1)
+            {
+                return null;
+            }
+            else
+            {
+                return Masks[SelectedAreaId];
+            }
+        }
+    }
+    public FeatureMenu SelectedMenu
+    {
+        get
+        {
+            if (SelectedArea == null)
+            {
+                return null;
+            }
+            else
+            {
+                return Menus[SelectedArea.AreaType];
+            }
+        }
+    }
 
     [Serializable]
     public class Mask
@@ -28,6 +60,7 @@ public class SnapshotBehaviour : MonoBehaviour
         public int AreaType;
 
         public bool requiredArea;
+        public string messageText;
         public string[] correctTags;
 
         [System.NonSerialized]
@@ -111,10 +144,9 @@ public class SnapshotBehaviour : MonoBehaviour
         }
         if(hash == hashSnapped)
         {
-            var menu = Menus[Masks[SelectedArea].AreaType];
             if (primaryIndex)
             {
-                menu.pointer.PointerClick();
+                SelectedMenu.pointer.PointerClick();
             }
             else { 
                 if (primaryHand)
@@ -123,7 +155,7 @@ public class SnapshotBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    menu.pointer.PointerMove(-thumbY);
+                    SelectedMenu.pointer.PointerMove(-thumbY);
                 }
             }
         }
@@ -164,13 +196,12 @@ public class SnapshotBehaviour : MonoBehaviour
         }
         fieldOfView = snapshotCamera.fieldOfView;
         SelectArea();
-        if(SelectedArea >= 0)
+        if(SelectedAreaId >= 0)
         {
-            var area = Masks[SelectedArea];
-            var menu = Menus[area.AreaType];
-            menu.MenuEnabled(true);
-            menu.pointer.SelectedIndex = 0;
-            menu.pointer.checkIndex();
+            SelectedMenu.MenuEnabled(true);
+            SelectedMenu.pointer.SelectedIndex = 0;
+            SelectedMenu.pointer.checkIndex();
+            saveAttemptCount = 0;
             animator.SetTrigger("Snap");
         }
         else
@@ -181,43 +212,65 @@ public class SnapshotBehaviour : MonoBehaviour
 
     private void SelectArea()
     {
-        SelectedArea = -1;
+        SelectedAreaId = -1;
         float bestSelected = MinSelected;
         for (int i = 0; i < Masks.Length; i++)
         {
             if (Masks[i].SnapCount.Covered >= bestSelected)
             {
                 bestSelected = Masks[i].SnapCount.Covered;
-                SelectedArea = i;
+                SelectedAreaId = i;
             }
+        }
+    }
+
+    public bool checkButton(FeatureButtonBehaviour button)
+    {
+        //return true if button is correct
+        if (button.IsSelected)
+        {
+            return Array.IndexOf(SelectedArea.correctTags, button.FeatureName) > -1;
+        }
+        else {
+            return Array.IndexOf(SelectedArea.correctTags, button.FeatureName) == -1; 
         }
     }
 
     public bool checkFeatures()
     {
-        var area = Masks[SelectedArea];
-        var menu = Menus[area.AreaType];
+        // return true if all buttons are correct
+        var area = SelectedArea;
+        var menu = SelectedMenu;
+        var correct = true;
         if (area.requiredArea)
         {
             foreach(var button in menu.buttons.featureButtons)
             {
-                if (button.IsSelected && Array.IndexOf(area.correctTags, button.FeatureName) == -1)
+                if (!checkButton(button))
                 {
-                    return false;
+                    correct = false;
+                    if (saveAttemptCount > 0)
+                    {
+                        button.Incorrect();
+                    }
                 }
-                if (!button.IsSelected && Array.IndexOf(area.correctTags, button.FeatureName) > -1)
+            }
+            if (!correct)
+            {
+                foreach(var ib in menu.buttons.featureButtons)
                 {
-                    return false;
+                    ib.IsSelected = false;
                 }
             }
         }
-        return true;
+        return correct;
     }
 
     public void SnapSave()
     {
         if (!checkFeatures())
         {
+            saveAttemptCount += 1;
             animator.SetTrigger("Incorrect");
             return;
         }
@@ -228,8 +281,8 @@ public class SnapshotBehaviour : MonoBehaviour
         var dts = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         sb.AppendLine(String.Format("Save Time: {0}", dts));
         sb.AppendLine(String.Format("FoV: {0}", fieldOfView));
-        sb.AppendLine(String.Format("Selected Area: {0}", Masks[SelectedArea].AreaName));
-        var area = Masks[SelectedArea];
+        sb.AppendLine(String.Format("Selected Area: {0}", Masks[SelectedAreaId].AreaName));
+        var area = Masks[SelectedAreaId];
         var menu = Menus[area.AreaType];
         foreach (var button in menu.buttons.featureButtons)
         {
@@ -262,15 +315,23 @@ public class SnapshotBehaviour : MonoBehaviour
         }
         */
         var aPath = Path.Combine(SavePath, String.Format("{0}-area-mask.png", dts));
-        imageUtils.Texture2DToPng(Masks[SelectedArea].SaveTexture, aPath);
+        imageUtils.Texture2DToPng(Masks[SelectedAreaId].SaveTexture, aPath);
 
         File.WriteAllText(txtPath, sb.ToString());
         foreach(var m in Menus)
         {
             m.MenuEnabled(false);
         }
-        gameStateHandle.GameState.SetIsCaptured(Masks[SelectedArea].AreaName, true);
-        animator.SetTrigger("Save");
+        gameStateHandle.GameState.SetIsCaptured(Masks[SelectedAreaId].AreaName, true);
+        if (area.requiredArea)
+        {
+            Message.Text = area.messageText;
+            animator.SetTrigger("Correct");
+        }
+        else
+        {
+            animator.SetTrigger("Save");
+        }
     }
 
     public void SnapDiscard()
