@@ -1,16 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
-using UnityEngine.Rendering;
-using UnityStandardAssets.Utility;
 using UnityEngine.UI;
 public class SnapshotBehaviour : MonoBehaviour
 {
-
-    //public RenderTexture skyboxRenderTextureArea;
     public string SavePath = "Photos";
     public RawImage areaImage;
     public Camera snapshotCamera;
@@ -57,21 +53,23 @@ public class SnapshotBehaviour : MonoBehaviour
     }
 
     public float fieldOfView;
-    public Texture2D SaveTexture;
     public List<AreaState> AreaStates;
+    [NonSerialized]
+    public Texture2D SaveTexture;
     [Serializable]
     public class AreaState
     {
         public string AreaName;
         public ImageUtils.PixelCount MaskCount;
         public ImageUtils.PixelCount SnapCount;
+        [NonSerialized]
         public Texture2D SaveTexture;
     }
     public AreaState getAreaState(string areaName)
     {
-        foreach(var state in AreaStates)
+        foreach (var state in AreaStates)
         {
-            if(state.AreaName == areaName)
+            if (state.AreaName == areaName)
             {
                 return state;
             }
@@ -83,9 +81,6 @@ public class SnapshotBehaviour : MonoBehaviour
         return newState;
     }
 
-    //[System.NonSerialized]
-    //[System.NonSerialized]
-
     private ImageUtils imageUtils = new ImageUtils();
 
     private int hashMap;
@@ -96,10 +91,6 @@ public class SnapshotBehaviour : MonoBehaviour
 
     private void Start()
     {
-        //shader
-        //Skybox s;
-        //s.material.shader
-
         SelectedArea = null;
         AreaStates = new List<AreaState>();
         gameStateHandle = GameObject.FindObjectOfType<GameStateHandle>();
@@ -228,7 +219,6 @@ public class SnapshotBehaviour : MonoBehaviour
         {
             var areaState = getAreaState(areaConfig.AreaName);
             areaCamera.Skybox.material.SetTexture("_MainTex", areaConfig.MaskTexture);
-            //areaCamera.Camera.targetTexture = areaConfig.TargetTexture;
             areaCamera.Camera.Render();
             imageUtils.RenderTextureToTexture2D(areaCamera.Camera.targetTexture, areaState.SaveTexture);
             areaState.SnapCount = imageUtils.CountPixels(areaState.SaveTexture, cutoff);
@@ -243,13 +233,10 @@ public class SnapshotBehaviour : MonoBehaviour
             saveAttemptCount = 0;
             {
                 areaCamera.Skybox.material.SetTexture("_MainTex", SelectedArea.MaskTexture);
-                //areaCamera.Camera.targetTexture = areaConfig.TargetTexture;
                 areaCamera.Camera.Render();
                 areaImage.texture = areaCamera.Camera.targetTexture;
-                //imageUtils.RenderTextureToTexture2D(areaCamera.Camera.targetTexture, SelectedAreaState.SaveTexture);
             }
 
-            //areaImage.texture = SelectedAreaState.SaveTexture;
             animator.SetTrigger("Snap");
         }
         else
@@ -263,7 +250,7 @@ public class SnapshotBehaviour : MonoBehaviour
         SelectedArea = null;
         float bestSelected = MinSelected;
 
-        foreach(var areaConfig in sceneConfig.AreaConfigs)
+        foreach (var areaConfig in sceneConfig.AreaConfigs)
         {
             var areaState = getAreaState(areaConfig.AreaName);
 
@@ -335,8 +322,6 @@ public class SnapshotBehaviour : MonoBehaviour
         sb.AppendLine(String.Format("Save Time: {0}", dts));
         sb.AppendLine(String.Format("FoV: {0}", fieldOfView));
         sb.AppendLine(String.Format("Selected Area: {0}", SelectedArea.AreaName));
-        //var area = Masks[SelectedAreaId];
-        //var menu = Menus[area.AreaType];
         foreach (var button in SelectedMenu.buttons.featureButtons)
         {
             sb.AppendLine(String.Format(
@@ -361,13 +346,6 @@ public class SnapshotBehaviour : MonoBehaviour
 
         imageUtils.Texture2DToPng(SaveTexture, imgPath);
 
-        /*
-        foreach (var areaTexture in Masks)
-        {
-            var aPath = Path.Combine(SavePath, String.Format("{0}-{1}.png", dts, areaTexture.AreaName));
-            imageUtils.Texture2DToPng(areaTexture.SaveTexture, aPath);
-        }
-        */
         var aPath = Path.Combine(SavePath, String.Format("{0}-area-mask.png", dts));
         imageUtils.Texture2DToPng(SelectedAreaState.SaveTexture, aPath);
 

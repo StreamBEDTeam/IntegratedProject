@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 public abstract class Hotspot : MonoBehaviour
@@ -10,9 +7,9 @@ public abstract class Hotspot : MonoBehaviour
     private GameStateHandle gameState;
     private SnapshotBehaviour snapshot;
     public int UnlockCount;
-    public float Speed=1f;
+    public float Speed = 1f;
     private int activeHash;
-    
+
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -38,11 +35,7 @@ public abstract class Hotspot : MonoBehaviour
     {
         get
         {
-            return animator.GetBool("Enabled");
-        }
-        set
-        {
-            animator.SetBool("Enabled", value);
+            return animator.GetBool("Enabled") && !animator.GetBool("Hidden");
         }
     }
 
@@ -50,7 +43,7 @@ public abstract class Hotspot : MonoBehaviour
     {
         var state = gameState.GameState;
         var sceneState = state.getSceneState();
-        HotspotEnabled = sceneState.CapturedAreaCount >= UnlockCount;
+        animator.SetBool("Enabled", sceneState.CapturedAreaCount >= UnlockCount);
         animator.SetBool("Hidden", snapshot.animator.GetCurrentAnimatorStateInfo(0).shortNameHash != activeHash);
     }
 }

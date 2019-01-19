@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-//[RequireComponent(typeof(OvrAvatar))]
 public class AvatarMaterialFix : MonoBehaviour
 {
     OvrAvatar avatar;

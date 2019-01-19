@@ -43,7 +43,6 @@ public class ImageUtils
         RenderTexture previouslyActive = RenderTexture.active;
         RenderTexture.active = src;
         dest.ReadPixels(new Rect(0, 0, src.width, src.height), 0, 0);
-        // ReadPixels always reads from RenderTexture.active
         RenderTexture.active = previouslyActive;
     }
 
@@ -52,16 +51,4 @@ public class ImageUtils
         var png = tex.EncodeToPNG();
         File.WriteAllBytes(path, png);
     }
-
-    /*
-    public void TextureToPng(RenderTexture src, string path)
-    {
-        var width = src.width;
-        var height = src.height;
-        var tex = new Texture2D(width, height);
-        RenderTextureToTexture2D(src, tex);
-        Texture2DToPng(tex, path);
-        UnityEngine.Object.Destroy(tex);
-    }
-    */
 }

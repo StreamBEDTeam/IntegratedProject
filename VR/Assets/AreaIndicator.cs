@@ -3,8 +3,6 @@
 [RequireComponent(typeof(Animator))]
 public class AreaIndicator : MonoBehaviour
 {
-    // Start is called before the first frame update
-
     SnapshotBehaviour snapshot;
     int activeHash;
     Animator animator;
@@ -20,6 +18,6 @@ public class AreaIndicator : MonoBehaviour
     {
         animator.SetBool(
             "Active",
-        snapshot.animator.GetCurrentAnimatorStateInfo(0).shortNameHash == activeHash);
+            snapshot.animator.GetCurrentAnimatorStateInfo(0).shortNameHash == activeHash);
     }
 }

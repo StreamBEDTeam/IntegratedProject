@@ -30,7 +30,7 @@ public class CameraZoom : MonoBehaviour
             Debug.LogException(new System.Exception("No cameras"));
         }
     }
-   
+
     void Update()
     {
         if (Array.IndexOf(enabledHashes, snapshotBehaviour.animator.GetCurrentAnimatorStateInfo(0).shortNameHash) > -1)
