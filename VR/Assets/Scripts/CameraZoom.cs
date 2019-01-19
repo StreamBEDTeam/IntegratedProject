@@ -38,7 +38,7 @@ public class CameraZoom : MonoBehaviour
             var x = OVRInput.Get(axis, controller).x;
             if (Mathf.Abs(x) > deadzone)
             {
-                fieldOfView += sensitivity * x * Time.deltaTime;
+                fieldOfView -= sensitivity * x * Time.deltaTime;
             }
             fieldOfView = Mathf.Clamp(fieldOfView, minFieldOfView, maxFieldOfView);
 

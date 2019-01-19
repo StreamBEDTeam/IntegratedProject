@@ -6,11 +6,13 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using UnityStandardAssets.Utility;
+using UnityEngine.UI;
 public class SnapshotBehaviour : MonoBehaviour
 {
 
-    public RenderTexture skyboxRenderTextureArea;
+    //public RenderTexture skyboxRenderTextureArea;
     public string SavePath = "Photos";
+    public RawImage areaImage;
     public Camera snapshotCamera;
     public PhotoCameraArea areaCamera;
     public float cutoff;
@@ -239,6 +241,15 @@ public class SnapshotBehaviour : MonoBehaviour
             SelectedMenu.pointer.SelectedIndex = 0;
             SelectedMenu.pointer.checkIndex();
             saveAttemptCount = 0;
+            {
+                areaCamera.Skybox.material.SetTexture("_MainTex", SelectedArea.MaskTexture);
+                //areaCamera.Camera.targetTexture = areaConfig.TargetTexture;
+                areaCamera.Camera.Render();
+                areaImage.texture = areaCamera.Camera.targetTexture;
+                //imageUtils.RenderTextureToTexture2D(areaCamera.Camera.targetTexture, SelectedAreaState.SaveTexture);
+            }
+
+            //areaImage.texture = SelectedAreaState.SaveTexture;
             animator.SetTrigger("Snap");
         }
         else
