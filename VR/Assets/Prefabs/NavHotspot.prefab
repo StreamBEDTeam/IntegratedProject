@@ -168,6 +168,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e52cd432a37f37144b15bbba07171871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UnlockCount: 0
+  Speed: 0.6
   sceneName: 
 --- !u!136 &9147695920135017457
 CapsuleCollider:

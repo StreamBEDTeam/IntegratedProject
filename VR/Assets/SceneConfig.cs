@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+using UnityEngine.Video;
 public class SceneConfig : MonoBehaviour
 {
+    public VideoClip SkyboxVideoClip;
+    public Texture2D MapGraphic;
     public AreaConfig[] AreaConfigs;
 
     [Serializable]

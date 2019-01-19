@@ -1317,14 +1317,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1397386906080323907, guid: 263ac3586fd938a45b453c4c26e184e1,
         type: 3}
-      propertyPath: FeatureHeader
-      value: 
-      objectReference: {fileID: 1422372772626968838}
-    - target: {fileID: 1397386906080323907, guid: 263ac3586fd938a45b453c4c26e184e1,
-        type: 3}
       propertyPath: FeatureName
       value: SnagsSome
       objectReference: {fileID: 0}
+    - target: {fileID: 1397386906080323907, guid: 263ac3586fd938a45b453c4c26e184e1,
+        type: 3}
+      propertyPath: FeatureHeader
+      value: 
+      objectReference: {fileID: 1422372772626968838}
     - target: {fileID: 1397386906059758061, guid: 263ac3586fd938a45b453c4c26e184e1,
         type: 3}
       propertyPath: m_Text
@@ -1622,14 +1622,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1397386906080323907, guid: 263ac3586fd938a45b453c4c26e184e1,
         type: 3}
-      propertyPath: FeatureHeader
-      value: 
-      objectReference: {fileID: 1422372772626968838}
-    - target: {fileID: 1397386906080323907, guid: 263ac3586fd938a45b453c4c26e184e1,
-        type: 3}
       propertyPath: FeatureName
       value: SnagsNone
       objectReference: {fileID: 0}
+    - target: {fileID: 1397386906080323907, guid: 263ac3586fd938a45b453c4c26e184e1,
+        type: 3}
+      propertyPath: FeatureHeader
+      value: 
+      objectReference: {fileID: 1422372772626968838}
     - target: {fileID: 1397386906059758061, guid: 263ac3586fd938a45b453c4c26e184e1,
         type: 3}
       propertyPath: m_Text

@@ -16,7 +16,7 @@ public class SnapshotBehaviour : MonoBehaviour
     public int saveAttemptCount = 0;
     public Mask[] Masks;
     public MessageBehaviour Message;
-    
+
     GameStateHandle gameStateHandle;
     public FeatureMenu[] Menus { get; private set; }
 

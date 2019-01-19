@@ -9,11 +9,13 @@ public abstract class Hotspot : MonoBehaviour
     private Animator animator;
     private GameStateHandle gameState;
     public int UnlockCount;
+    public float Speed=1f;
     
     private void Start()
     {
         animator = GetComponent<Animator>();
         gameState = GameObject.FindObjectOfType<GameStateHandle>();
+        animator.SetFloat("Speed", Speed);
     }
     public void OnStateEnter(string state)
     {

@@ -4,27 +4,43 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(RawImage))]
 public class GlowMask : MonoBehaviour
 {
     public string areaName;
-    public bool isStream;
+    public float offset;
+    public int areaType;
     public bool isCaptured;
-    Animator animator;
+    public Texture2D maskTexture;
+
     GameStateHandle gameStateHandle;
-    // Start is called before the first frame update
+    Animator animator;
+    RawImage image;
+
     void Start()
     {
         gameStateHandle = GameObject.FindObjectOfType<GameStateHandle>();
         animator = GetComponent<Animator>();
-        animator.SetBool("IsStream", isStream);
+        image = GetComponent<RawImage>();
+        image.texture = this.maskTexture;
+        animator.SetFloat("Offset", offset);
+        animator.SetInteger("AreaType", areaType);
+        animator.SetBool("Captured", isCaptured);
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         isCaptured = gameStateHandle.GameState.GetIsCaptured(areaName);
         animator.SetBool("Captured", isCaptured);
+    }
+
+    public void FromConfig(SceneConfig.AreaConfig area, float offset)
+    {
+        areaName = area.AreaName;
+        areaType = area.AreaType;
+        gameObject.name = string.Format("Mask {0}", area.AreaName);
+        maskTexture = area.MaskTexture;
+        this.offset = offset;
     }
 }
