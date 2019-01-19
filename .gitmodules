@@ -1,0 +1,3 @@
+[submodule "NonVR"]
+	path = NonVR
+	url = https://github.com/StreamBEDTeam/NonVR.git
