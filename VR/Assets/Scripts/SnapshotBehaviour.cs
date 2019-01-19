@@ -354,7 +354,7 @@ public class SnapshotBehaviour : MonoBehaviour
         {
             m.MenuEnabled(false);
         }
-        gameStateHandle.GameState.SetIsCaptured(SelectedArea.AreaName, true);
+        gameStateHandle.Instance.SetIsCaptured(SelectedArea.AreaName, true);
         if (SelectedArea.requiredArea)
         {
             Message.Text = SelectedArea.messageText;

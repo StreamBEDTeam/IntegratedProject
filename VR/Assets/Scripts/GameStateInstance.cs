@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameStateContent : MonoBehaviour
+public class GameStateInstance : MonoBehaviour
 {
     //public SceneState[] scenes;
     public List<SceneState> scenes;

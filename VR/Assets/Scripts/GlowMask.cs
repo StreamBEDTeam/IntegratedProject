@@ -31,7 +31,7 @@ public class GlowMask : MonoBehaviour
     
     void Update()
     {
-        isCaptured = gameStateHandle.GameState.GetIsCaptured(areaName);
+        isCaptured = gameStateHandle.Instance.GetIsCaptured(areaName);
         animator.SetBool("Captured", isCaptured);
     }
 

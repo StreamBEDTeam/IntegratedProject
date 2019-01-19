@@ -16,7 +16,7 @@ public class RequirePhotos : MonoBehaviour
     
     private void Update()
     {
-        var state = gameState.GameState;
+        var state = gameState.Instance;
         var sceneState = state.getSceneState();
         var active = sceneState.CapturedAreaCount >= UnlockCount;
         targetObject.SetActive(active);

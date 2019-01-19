@@ -41,7 +41,7 @@ public abstract class Hotspot : MonoBehaviour
 
     private void Update()
     {
-        var state = gameState.GameState;
+        var state = gameState.Instance;
         var sceneState = state.getSceneState();
         animator.SetBool("Enabled", sceneState.CapturedAreaCount >= UnlockCount);
         animator.SetBool("Hidden", snapshot.animator.GetCurrentAnimatorStateInfo(0).shortNameHash != activeHash);
