@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using UnityEngine;
+using System;
 public class ImageUtils
 {
+    [Serializable]
     public class PixelCount
     {
         public int Total = 0;

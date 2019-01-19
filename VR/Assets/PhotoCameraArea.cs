@@ -4,12 +4,29 @@
 [RequireComponent(typeof(Skybox))]
 public class PhotoCameraArea : MonoBehaviour
 {
-    void Start()
-    {
-        Camera = GetComponent<Camera>();
-        Skybox = GetComponent<Skybox>();
-    }
+    private Camera camera;
+    private Skybox skybox;
 
-    public Camera Camera { get; private set; }
-    public Skybox Skybox { get; private set; }
+    public Camera Camera
+    {
+        get
+        {
+            if (camera == null)
+            {
+                camera = GetComponent<Camera>();
+            }
+            return camera;
+        }
+    }
+    public Skybox Skybox
+    {
+        get
+        {
+            if (skybox == null)
+            {
+                skybox = GetComponent<Skybox>();
+            }
+            return skybox;
+        }
+    }
 }

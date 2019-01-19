@@ -3,37 +3,28 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using System.Collections.Generic;
+using UnityEngine.Rendering;
+using UnityStandardAssets.Utility;
 public class SnapshotBehaviour : MonoBehaviour
 {
+
+    public RenderTexture skyboxRenderTextureArea;
     public string SavePath = "Photos";
     public Camera snapshotCamera;
     public PhotoCameraArea areaCamera;
     public float cutoff;
     public Animator animator;
-    public int SelectedAreaId = -1;
     public float MinSelected = 0.1f;
     public int saveAttemptCount = 0;
-    public Mask[] Masks;
     public MessageBehaviour Message;
-
-    GameStateHandle gameStateHandle;
     public FeatureMenu[] Menus { get; private set; }
 
-    public Mask SelectedArea
-    {
-        get
-        {
-            if (SelectedAreaId == -1)
-            {
-                return null;
-            }
-            else
-            {
-                return Masks[SelectedAreaId];
-            }
-        }
-    }
+    private GameStateHandle gameStateHandle;
+    private SceneConfig sceneConfig;
+
+    public SceneConfig.AreaConfig SelectedArea;
+
     public FeatureMenu SelectedMenu
     {
         get
@@ -48,32 +39,50 @@ public class SnapshotBehaviour : MonoBehaviour
             }
         }
     }
-
-    [Serializable]
-    public class Mask
+    public AreaState SelectedAreaState
     {
-        public Material MaskSkybox;
-        public RenderTexture TargetTexture;
-        public Texture2D MaskTexture;
-        public string AreaName;
-        public int AreaType;
-
-        public bool requiredArea;
-        public string messageText;
-        public string[] correctTags;
-
-        [System.NonSerialized]
-        public ImageUtils.PixelCount MaskCount;
-        [System.NonSerialized]
-        public ImageUtils.PixelCount SnapCount;
-        [System.NonSerialized]
-        public Texture2D SaveTexture;
+        get
+        {
+            if (SelectedArea == null)
+            {
+                return null;
+            }
+            else
+            {
+                return getAreaState(SelectedArea.AreaName);
+            }
+        }
     }
 
-    [System.NonSerialized]
     public float fieldOfView;
-    [System.NonSerialized]
     public Texture2D SaveTexture;
+    public List<AreaState> AreaStates;
+    [Serializable]
+    public class AreaState
+    {
+        public string AreaName;
+        public ImageUtils.PixelCount MaskCount;
+        public ImageUtils.PixelCount SnapCount;
+        public Texture2D SaveTexture;
+    }
+    public AreaState getAreaState(string areaName)
+    {
+        foreach(var state in AreaStates)
+        {
+            if(state.AreaName == areaName)
+            {
+                return state;
+            }
+
+        }
+        var newState = new AreaState();
+        newState.AreaName = areaName;
+        AreaStates.Add(newState);
+        return newState;
+    }
+
+    //[System.NonSerialized]
+    //[System.NonSerialized]
 
     private ImageUtils imageUtils = new ImageUtils();
 
@@ -85,8 +94,14 @@ public class SnapshotBehaviour : MonoBehaviour
 
     private void Start()
     {
-        //transitionImage = GameObject.FindObjectOfType<TransitionImage>();
+        //shader
+        //Skybox s;
+        //s.material.shader
+
+        SelectedArea = null;
+        AreaStates = new List<AreaState>();
         gameStateHandle = GameObject.FindObjectOfType<GameStateHandle>();
+        sceneConfig = GameObject.FindObjectOfType<SceneConfig>();
         axisY = new Axis2DToPress(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch, 0.6f);
         hashMap = Animator.StringToHash("Map");
         hashOpened = Animator.StringToHash("Opened");
@@ -95,11 +110,14 @@ public class SnapshotBehaviour : MonoBehaviour
 
         var snapTexture = snapshotCamera.targetTexture;
         SaveTexture = new Texture2D(snapTexture.width, snapTexture.height);
-        foreach (var tex in Masks)
+        foreach (var areaConfig in sceneConfig.AreaConfigs)
         {
-            tex.MaskCount = imageUtils.CountPixels(tex.MaskTexture, cutoff);
-            tex.SaveTexture = new Texture2D(tex.TargetTexture.width, tex.TargetTexture.height);
-            Debug.LogFormat("Tex {0}: {1}/{2}", tex.AreaName, tex.MaskCount.Selected, tex.MaskCount.Total);
+            var areaState = getAreaState(areaConfig.AreaName);
+            areaState.MaskCount = imageUtils.CountPixels(areaConfig.MaskTexture, cutoff);
+            areaState.SaveTexture = new Texture2D(
+                areaCamera.Camera.targetTexture.width,
+                areaCamera.Camera.targetTexture.height);
+            Debug.LogFormat("Tex {0}: {1}/{2}", areaConfig.AreaName, areaState.MaskCount.Selected, areaState.MaskCount.Total);
         }
 
         Menus = GetComponentsInChildren<FeatureMenu>();
@@ -189,7 +207,7 @@ public class SnapshotBehaviour : MonoBehaviour
             Destroy(SaveTexture);
             SaveTexture = null;
         }
-        foreach (var tex in Masks)
+        foreach (var tex in AreaStates)
         {
             if (tex.SaveTexture != null)
             {
@@ -203,17 +221,19 @@ public class SnapshotBehaviour : MonoBehaviour
     {
         snapshotCamera.Render();
         imageUtils.RenderTextureToTexture2D(snapshotCamera.targetTexture, SaveTexture);
-        foreach (var mask in Masks)
+
+        foreach (var areaConfig in sceneConfig.AreaConfigs)
         {
-            areaCamera.Skybox.material = mask.MaskSkybox;
-            areaCamera.Camera.targetTexture = mask.TargetTexture;
+            var areaState = getAreaState(areaConfig.AreaName);
+            areaCamera.Skybox.material.SetTexture("_MainTex", areaConfig.MaskTexture);
+            //areaCamera.Camera.targetTexture = areaConfig.TargetTexture;
             areaCamera.Camera.Render();
-            imageUtils.RenderTextureToTexture2D(mask.TargetTexture, mask.SaveTexture);
-            mask.SnapCount = imageUtils.CountPixels(mask.SaveTexture, cutoff);
+            imageUtils.RenderTextureToTexture2D(areaCamera.Camera.targetTexture, areaState.SaveTexture);
+            areaState.SnapCount = imageUtils.CountPixels(areaState.SaveTexture, cutoff);
         }
         fieldOfView = snapshotCamera.fieldOfView;
         SelectArea();
-        if (SelectedAreaId >= 0)
+        if (SelectedArea != null)
         {
             SelectedMenu.MenuEnabled(true);
             SelectedMenu.pointer.SelectedIndex = 0;
@@ -229,15 +249,19 @@ public class SnapshotBehaviour : MonoBehaviour
 
     private void SelectArea()
     {
-        SelectedAreaId = -1;
+        SelectedArea = null;
         float bestSelected = MinSelected;
-        for (int i = 0; i < Masks.Length; i++)
+
+        foreach(var areaConfig in sceneConfig.AreaConfigs)
         {
-            if (Masks[i].SnapCount.Covered >= bestSelected)
+            var areaState = getAreaState(areaConfig.AreaName);
+
+            if (areaState.SnapCount.Covered >= bestSelected)
             {
-                bestSelected = Masks[i].SnapCount.Covered;
-                SelectedAreaId = i;
+                bestSelected = areaState.SnapCount.Covered;
+                SelectedArea = areaConfig;
             }
+
         }
     }
 
@@ -299,26 +323,27 @@ public class SnapshotBehaviour : MonoBehaviour
         var dts = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         sb.AppendLine(String.Format("Save Time: {0}", dts));
         sb.AppendLine(String.Format("FoV: {0}", fieldOfView));
-        sb.AppendLine(String.Format("Selected Area: {0}", Masks[SelectedAreaId].AreaName));
-        var area = Masks[SelectedAreaId];
-        var menu = Menus[area.AreaType];
-        foreach (var button in menu.buttons.featureButtons)
+        sb.AppendLine(String.Format("Selected Area: {0}", SelectedArea.AreaName));
+        //var area = Masks[SelectedAreaId];
+        //var menu = Menus[area.AreaType];
+        foreach (var button in SelectedMenu.buttons.featureButtons)
         {
             sb.AppendLine(String.Format(
                             "Feature {0}: {1}",
                             button.FeatureName,
                             button.IsSelected ? "True" : "False"));
         }
-        foreach (var mask in Masks)
+        foreach (var areaConfig in sceneConfig.AreaConfigs)
         {
+            var areaState = getAreaState(areaConfig.AreaName);
             sb.AppendLine(String.Format(
-                "Area {0} Mask Selected: {1}", mask.AreaName, mask.MaskCount.Selected));
+                "Area {0} Mask Selected: {1}", areaState.AreaName, areaState.MaskCount.Selected));
             sb.AppendLine(String.Format(
-                "Area {0} Mask Total: {1}", mask.AreaName, mask.MaskCount.Total));
+                "Area {0} Mask Total: {1}", areaState.AreaName, areaState.MaskCount.Total));
             sb.AppendLine(String.Format(
-                "Area {0} Snap Selected: {1}", mask.AreaName, mask.SnapCount.Selected));
+                "Area {0} Snap Selected: {1}", areaState.AreaName, areaState.SnapCount.Selected));
             sb.AppendLine(String.Format(
-                "Area {0} Snap Total: {1}", mask.AreaName, mask.SnapCount.Total));
+                "Area {0} Snap Total: {1}", areaState.AreaName, areaState.SnapCount.Total));
         }
         var imgPath = Path.Combine(SavePath, String.Format("{0}.png", dts));
         var txtPath = Path.Combine(SavePath, String.Format("{0}.txt", dts));
@@ -333,7 +358,7 @@ public class SnapshotBehaviour : MonoBehaviour
         }
         */
         var aPath = Path.Combine(SavePath, String.Format("{0}-area-mask.png", dts));
-        imageUtils.Texture2DToPng(SelectedArea.SaveTexture, aPath);
+        imageUtils.Texture2DToPng(SelectedAreaState.SaveTexture, aPath);
 
         File.WriteAllText(txtPath, sb.ToString());
         foreach (var m in Menus)
@@ -341,9 +366,9 @@ public class SnapshotBehaviour : MonoBehaviour
             m.MenuEnabled(false);
         }
         gameStateHandle.GameState.SetIsCaptured(SelectedArea.AreaName, true);
-        if (area.requiredArea)
+        if (SelectedArea.requiredArea)
         {
-            Message.Text = area.messageText;
+            Message.Text = SelectedArea.messageText;
             animator.SetTrigger("Correct");
         }
         else
