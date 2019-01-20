@@ -116,10 +116,10 @@ public class SnapshotBehaviour : MonoBehaviour
         Menus = GetComponentsInChildren<FeatureMenu>();
         foreach (var menu in Menus)
         {
-            menu.buttons.saveButtonEvent.RemoveAllListeners();
-            menu.buttons.saveButtonEvent.AddListener(SnapSave);
-            menu.buttons.discardButtonEvent.RemoveAllListeners();
-            menu.buttons.discardButtonEvent.AddListener(SnapDiscard);
+            menu.Buttons.saveButtonEvent.RemoveAllListeners();
+            menu.Buttons.saveButtonEvent.AddListener(SnapSave);
+            menu.Buttons.discardButtonEvent.RemoveAllListeners();
+            menu.Buttons.discardButtonEvent.AddListener(SnapDiscard);
             menu.MenuEnabled(false);
         }
     }
@@ -173,7 +173,7 @@ public class SnapshotBehaviour : MonoBehaviour
         {
             if (primaryIndex)
             {
-                SelectedMenu.pointer.PointerClick();
+                SelectedMenu.Pointer.PointerClick();
             }
             else
             {
@@ -183,7 +183,7 @@ public class SnapshotBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    SelectedMenu.pointer.PointerMove(-thumbY);
+                    SelectedMenu.Pointer.PointerMove(-thumbY);
                 }
             }
         }
@@ -228,8 +228,8 @@ public class SnapshotBehaviour : MonoBehaviour
         if (SelectedArea != null)
         {
             SelectedMenu.MenuEnabled(true);
-            SelectedMenu.pointer.SelectedIndex = 0;
-            SelectedMenu.pointer.checkIndex();
+            SelectedMenu.Pointer.SelectedIndex = 0;
+            SelectedMenu.Pointer.checkIndex();
             saveAttemptCount = 0;
             {
                 areaCamera.Skybox.material.SetTexture("_MainTex", SelectedArea.MaskTexture);
@@ -284,7 +284,7 @@ public class SnapshotBehaviour : MonoBehaviour
         var correct = true;
         if (area.requiredArea)
         {
-            foreach (var button in menu.buttons.featureButtons)
+            foreach (var button in menu.Buttons.featureButtons)
             {
                 if (!checkButton(button))
                 {
@@ -297,7 +297,7 @@ public class SnapshotBehaviour : MonoBehaviour
             }
             if (!correct)
             {
-                foreach (var ib in menu.buttons.featureButtons)
+                foreach (var ib in menu.Buttons.featureButtons)
                 {
                     ib.IsSelected = false;
                 }
@@ -322,12 +322,17 @@ public class SnapshotBehaviour : MonoBehaviour
         sb.AppendLine(String.Format("Save Time: {0}", dts));
         sb.AppendLine(String.Format("FoV: {0}", fieldOfView));
         sb.AppendLine(String.Format("Selected Area: {0}", SelectedArea.AreaName));
-        foreach (var button in SelectedMenu.buttons.featureButtons)
+        var tags = new List<string>();
+        foreach (var button in SelectedMenu.Buttons.featureButtons)
         {
             sb.AppendLine(String.Format(
                             "Feature {0}: {1}",
                             button.FeatureName,
                             button.IsSelected ? "True" : "False"));
+            if (button.IsSelected)
+            {
+                tags.Add(button.FeatureName);
+            }
         }
         foreach (var areaConfig in sceneConfig.AreaConfigs)
         {
@@ -341,15 +346,18 @@ public class SnapshotBehaviour : MonoBehaviour
             sb.AppendLine(String.Format(
                 "Area {0} Snap Total: {1}", areaState.AreaName, areaState.SnapCount.Total));
         }
-        var imgPath = Path.Combine(SavePath, String.Format("{0}.png", dts));
-        var txtPath = Path.Combine(SavePath, String.Format("{0}.txt", dts));
+        var photo = new GameStateInstance.Photo();
+        photo.Tags = tags;
+        photo.ImagePath = Path.Combine(SavePath, String.Format("{0}.png", dts));
+        photo.MetadataPath = Path.Combine(SavePath, String.Format("{0}.txt", dts));
+        photo.ImageIndicatorPath = Path.Combine(SavePath, String.Format("{0}-indicator.png", dts));
+        photo.AreaName = SelectedArea.AreaName;
+        photo.SceneName = SceneManager.GetActiveScene().name;
+        gameStateHandle.Instance.Photos.Add(photo);
 
-        imageUtils.Texture2DToPng(SaveTexture, imgPath);
-
-        var aPath = Path.Combine(SavePath, String.Format("{0}-area-mask.png", dts));
-        imageUtils.Texture2DToPng(SelectedAreaState.SaveTexture, aPath);
-
-        File.WriteAllText(txtPath, sb.ToString());
+        imageUtils.Texture2DToPng(SaveTexture, photo.ImagePath);
+        imageUtils.Texture2DToPng(SelectedAreaState.SaveTexture, photo.ImageIndicatorPath);
+        File.WriteAllText(photo.MetadataPath, sb.ToString());
         foreach (var m in Menus)
         {
             m.MenuEnabled(false);

@@ -68,11 +68,11 @@ void Start()
 
                 if (hotspot != null) {
                     selectedHotspot = hotspot;
+                    selectedHotspot.RaycastHit(true);
                     if (selectedHotspot.HotspotEnabled)
                     {
                         line.startColor = Color.red;
                         line.endColor = Color.red;
-                        selectedHotspot.RaycastHit(true);
                     }
                 }
             }
@@ -83,7 +83,6 @@ void Start()
                     selectedHotspot.RaycastHit(false);
                     selectedHotspot = null;
                 }
-                //Debug.Log("Nothing");
                 line.startColor = Color.white;
                 line.endColor = Color.white;
             }
@@ -93,27 +92,5 @@ void Start()
         {
             line.enabled = false;
         }
-
-        //var results = new List<RaycastResult>();
-        //var data = new PointerEventData(eventSystem);
-        //raycaster.Raycast(data, results);
-        //data.position = t.position;
-        //data.
-        //if(hit != null) { 
-            //Debug.LogFormat("Raycasted {0}", results[0].gameObject.name);
-            //var result = results[0];
-            //pos2 = result.worldPosition;
-
-        //}
-        //else
-        //{
-            //Debug.LogFormat("Rays: {0}", raycaster.)
-        //}
-        //raycaster.Raycast(new PointerEventData()
-        //if (t != null)
-        //{
-        //transform.position = t.position;
-        //transform.rotation = t.rotation;
-        //}
     }
 }

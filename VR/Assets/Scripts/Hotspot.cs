@@ -35,15 +35,29 @@ public abstract class Hotspot : MonoBehaviour
     {
         get
         {
-            return animator.GetBool("Enabled") && !animator.GetBool("Hidden");
+            return animator.GetBool("Enabled");
         }
     }
 
     private void Update()
     {
-        var state = gameState.Instance;
-        var sceneState = state.getSceneState();
-        animator.SetBool("Enabled", sceneState.CapturedAreaCount >= UnlockCount);
-        animator.SetBool("Hidden", snapshot.animator.GetCurrentAnimatorStateInfo(0).shortNameHash != activeHash);
+        if (gameState != null)
+        {
+            var state = gameState.Instance;
+            var sceneState = state.getSceneState();
+            animator.SetBool("Enabled", sceneState.CapturedAreaCount >= UnlockCount);
+        }
+        else
+        {
+            animator.SetBool("Enabled", true);
+        }
+        if (snapshot != null)
+        {
+            animator.SetBool("Hidden", snapshot.animator.GetCurrentAnimatorStateInfo(0).shortNameHash != activeHash);
+        }
+        else
+        {
+            animator.SetBool("Hidden", false);
+        }
     }
 }

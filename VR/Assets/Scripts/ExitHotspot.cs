@@ -7,6 +7,6 @@ public class ExitHotspot : Hotspot
 {
     public override void HotspotTrigger()
     {
-
+        SceneManager.LoadScene("MenuScene");
     }
 }

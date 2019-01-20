@@ -4,6 +4,18 @@ using System;
 [RequireComponent(typeof(Animator))]
 public class PointerBehaviour : MonoBehaviour
 {
+    private Animator _animator;
+    public Animator Animator
+    {
+        get
+        {
+            if (_animator == null)
+            {
+                _animator = GetComponent<Animator>();
+            }
+            return _animator;
+        }
+    }
     public MenuButtons Buttons;
  
     public int SelectedIndex
@@ -46,11 +58,9 @@ public class PointerBehaviour : MonoBehaviour
     private RectTransform rectTransform;
     private Vector3 destination;
     private Vector3 velocity = Vector3.zero;
-    private Animator animator;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
         rectTransform = GetComponent<RectTransform>();
         SelectedIndex = 0;
         rectTransform.localPosition = destination;
@@ -58,7 +68,7 @@ public class PointerBehaviour : MonoBehaviour
 
     public void PointerEnabled(bool enabled)
     {
-        animator.SetBool("Enabled", enabled);
+        Animator.SetBool("Enabled", enabled);
     }
     public void PointerClick()
     {

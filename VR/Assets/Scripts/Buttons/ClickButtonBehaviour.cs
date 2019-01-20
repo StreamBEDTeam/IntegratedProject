@@ -4,12 +4,22 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Animator))]
 public class ClickButtonBehaviour : IButtonBehaviour
 {
-    private Animator animator;
+    private Animator _animator;
+    public Animator Animator
+    {
+        get
+        {
+            if(_animator == null)
+            {
+                _animator = GetComponent<Animator>();
+            }
+            return _animator;
+        }
+    }
     public UnityEvent clickEvent = new UnityEvent();
 
     private void Start()
     {
-        animator = GetComponent<Animator>();
         if (clickEvent == null)
         {
             clickEvent = new UnityEvent();
@@ -25,6 +35,6 @@ public class ClickButtonBehaviour : IButtonBehaviour
     public override void ButtonEnabled(bool enabled)
     {
         base.ButtonEnabled(enabled);
-        animator.SetBool("Enabled", IsButtonEnabled);
+        Animator.SetBool("Enabled", IsButtonEnabled);
     }
 }

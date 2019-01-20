@@ -9,6 +9,19 @@ public class GameStateInstance : MonoBehaviour
     public List<SceneState> scenes;
     public bool isOnboarding;
 
+    public List<Photo> Photos; 
+
+    [Serializable]
+    public class Photo
+    {
+        public string ImagePath;
+        public string ImageIndicatorPath;
+        public string MetadataPath;
+        public string AreaName;
+        public string SceneName;
+        public List<string> Tags;
+    }
+
     [Serializable]
     public class SceneState
     {
@@ -116,5 +129,18 @@ public class GameStateInstance : MonoBehaviour
         var scene = getSceneState(sceneName);
         var area = scene.getAreaState(areaName);
         area.isCaptured = isCaptured;
+    }
+
+    public int getTagCount(string tag)
+    {
+        int count = 0;
+        foreach(var photo in Photos)
+        {
+            if (photo.Tags.Contains(tag))
+            {
+                count++;
+            }
+        }
+        return count;
     }
 }

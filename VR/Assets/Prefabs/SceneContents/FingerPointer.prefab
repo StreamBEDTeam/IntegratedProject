@@ -50,7 +50,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RaycastMask:
-    mask: -1
+    mask: 3895
+  ActiveState: Closed
+  pointerLen: 0.5
 --- !u!120 &5977557373766783866
 LineRenderer:
   m_ObjectHideFlags: 0

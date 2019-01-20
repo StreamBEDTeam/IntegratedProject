@@ -4,12 +4,42 @@ using UnityEngine.Events;
 
 public class MenuButtons : MonoBehaviour
 {
-    [NonSerialized]
-    public IButtonBehaviour[] buttonBehaviours;
-    [NonSerialized]
-    public FeatureButtonBehaviour[] featureButtons;
-    [NonSerialized]
-    public FeatureHeader[] featureHeaders;
+    private IButtonBehaviour[] _buttonBehaviours;
+    public IButtonBehaviour[] buttonBehaviours
+    {
+        get
+        {
+            if (_buttonBehaviours == null)
+            {
+                _buttonBehaviours = GetComponentsInChildren<IButtonBehaviour>(true);
+            }
+            return _buttonBehaviours;
+        }
+    }
+    private FeatureButtonBehaviour[] _featureButtons;
+    public FeatureButtonBehaviour[] featureButtons
+    {
+        get
+        {
+            if (_featureButtons == null)
+            {
+                _featureButtons = GetComponentsInChildren<FeatureButtonBehaviour>(true);
+            }
+            return _featureButtons;
+        }
+    }
+    private FeatureHeader[] _featureHeaders;
+    public FeatureHeader[] featureHeaders
+    {
+        get
+        {
+            if (_featureHeaders == null)
+            {
+                _featureHeaders = GetComponentsInChildren<FeatureHeader>(true);
+            }
+            return _featureHeaders;
+        }
+    }
     [NonSerialized]
     public SaveButtonBehaviour[] saveButtons;
     [NonSerialized]
@@ -20,9 +50,6 @@ public class MenuButtons : MonoBehaviour
  
     void Start()
     {
-        buttonBehaviours = GetComponentsInChildren<IButtonBehaviour>(true);
-        featureButtons = GetComponentsInChildren<FeatureButtonBehaviour>(true);
-        featureHeaders = GetComponentsInChildren<FeatureHeader>(true);
         saveButtons = GetComponentsInChildren<SaveButtonBehaviour>(true);
         discardButtons = GetComponentsInChildren<DiscardButtonBehaviour>(true);
         /*
