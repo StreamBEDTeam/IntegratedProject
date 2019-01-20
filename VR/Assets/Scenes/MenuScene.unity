@@ -187,7 +187,7 @@ PrefabInstance:
     - target: {fileID: 1337811798610847323, guid: bb119ecc1099b6a46b8d8712160642db,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.88
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1337811798610847323, guid: bb119ecc1099b6a46b8d8712160642db,
         type: 3}
@@ -233,6 +233,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: Stream 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008061997837227084, guid: bb119ecc1099b6a46b8d8712160642db,
+        type: 3}
+      propertyPath: sceneName
+      value: SceneHandheld
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb119ecc1099b6a46b8d8712160642db, type: 3}
@@ -311,7 +316,7 @@ PrefabInstance:
     - target: {fileID: 1337811798610847323, guid: bb119ecc1099b6a46b8d8712160642db,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.4
+      value: -0.57
       objectReference: {fileID: 0}
     - target: {fileID: 1337811798610847323, guid: bb119ecc1099b6a46b8d8712160642db,
         type: 3}
@@ -357,6 +362,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: Stream 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008061997837227084, guid: bb119ecc1099b6a46b8d8712160642db,
+        type: 3}
+      propertyPath: sceneName
+      value: SceneHandheld
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb119ecc1099b6a46b8d8712160642db, type: 3}
@@ -622,6 +632,7 @@ GameObject:
   - component: {fileID: 1715950555}
   - component: {fileID: 1715950557}
   - component: {fileID: 1715950556}
+  - component: {fileID: 1715950558}
   m_Layer: 0
   m_Name: Menu
   m_TagString: Untagged
@@ -674,6 +685,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resetButton: 67108864
+--- !u!114 &1715950558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715950554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d2bd3cfe6195674b8d88d05dc954799, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1740675899
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -795,6 +818,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: Tutorial
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008061997837227084, guid: bb119ecc1099b6a46b8d8712160642db,
+        type: 3}
+      propertyPath: sceneName
+      value: SceneHandheld
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb119ecc1099b6a46b8d8712160642db, type: 3}

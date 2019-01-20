@@ -10,13 +10,21 @@ public class SceneConfig : MonoBehaviour
     [Serializable]
     public class AreaConfig
     {
-        public Texture2D MaskTexture;
         public string AreaName;
         public int AreaType;
+        public Texture2D MaskTexture;
 
+        [Tooltip("True if onboarding area")]
         public bool requiredArea;
+        [Tooltip("Message shown (only if onboarding)")]
         public string messageText;
+        [Tooltip("Correct features (only if onboarding)")]
         public string[] correctTags;
+
+        public override string ToString()
+        {
+            return string.Format("Area {0}", AreaName);
+        }
     }
 
     public AreaConfig GetAreaConfig(string areaName)
